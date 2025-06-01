@@ -9,12 +9,14 @@ algorithms = [
     ("custom_cma_ext", custom_cma_es_ext),
 ]
 
-
-
 ## parameters
 sigma = 0.3
 population_size = 20
 max_iter = 100
+
+## random seed and x0
+np.random.seed(42)
+x0 = np.random.uniform(-5, 5, size=10)
 
 ## testing
 for folder_name, algorithm in algorithms:
@@ -27,7 +29,6 @@ for folder_name, algorithm in algorithms:
         print(f"Testing function: {problem.id}")
 
         problem.observe_with(observer)
-        x0 = np.random.randn(problem.dimension)
         solution = algorithm(problem, x0, sigma, population_size, max_iter)
         fitness = problem(solution)
 
