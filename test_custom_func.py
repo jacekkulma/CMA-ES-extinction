@@ -23,10 +23,19 @@ for algorithm in algorithms:
     print(f"Running algorithm: {algorithm.__name__}\n")
     for name, func in test_functions.items():
         print(f" Testing function: {name}")
+
+        function_values = []
+        best_solutions = []
         for seed in seeds:
-            print(f"random seed: {seed}")
+            np.random.seed(seed)
             x0 = np.random.uniform(-5, 5, size=dim)
             result = algorithm(func, x0, sigma, population_size, max_iter)
             final_value = func(result)
-            print(f"   Best solution: {result}")
-            print(f"   Objective function value: {final_value:.6f}\n")
+            
+            function_values.append(final_value)
+            best_solutions.append(result)
+
+        avg_value = np.mean(function_values)
+        avg_best_solution = np.mean(best_solutions, axis=0)
+        print(f"   Best solution: {avg_best_solution}")
+        print(f"   Objective function value: {avg_value:.6f}\n")
