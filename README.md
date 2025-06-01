@@ -25,7 +25,7 @@ Windows:
 python3 -m venv venv
 .\venv\Scripts\activate 
 ```
-Linux/maxOS:
+Linux/macOS:
 ```bash
 python3 -m venv venv
 source venv/bin/activate
