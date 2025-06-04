@@ -1,7 +1,7 @@
 import numpy as np
-from utils import custom_cma_es, custom_cma_es_ext, sphere, rastrigin, rosenbrock, ackley, run_cma_es_cma
+from utils import custom_cma_es, custom_cma_es_ext, sphere, rastrigin, rosenbrock, ackley, cma_es_cma
 
-algorithms = [run_cma_es_cma, custom_cma_es, custom_cma_es_ext]
+algorithms = [cma_es_cma, custom_cma_es, custom_cma_es_ext]
 
 ## parameters
 dim = 10
