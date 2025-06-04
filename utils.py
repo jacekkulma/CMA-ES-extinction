@@ -3,8 +3,9 @@ import math
 import cma
 
 ## built-in cma-es
-def run_cma_es_cma(problem, x0, sigma, population_size, max_iter):
-    es = cma.CMAEvolutionStrategy(x0, sigma, {'popsize': population_size, 'maxiter': max_iter, 'verb_log': 0, 'verb_disp': 0})
+def cma_es_cma(problem, x0, sigma, population_size, max_iter, seed=None):
+    es = cma.CMAEvolutionStrategy(x0, sigma, {'popsize': population_size, 'maxiter': max_iter,
+                                              'verb_log': 0, 'verb_disp': 0, 'seed': seed})
     while not es.stop():
         solutions = es.ask()
         fitnesses = [problem(x) for x in solutions]
@@ -14,7 +15,10 @@ def run_cma_es_cma(problem, x0, sigma, population_size, max_iter):
 
 
 ## basic cma-es
-def custom_cma_es(function, x0, sigma, population_size, max_iter=100):
+def custom_cma_es(function, x0, sigma, population_size, max_iter=100, seed=None):
+    if seed is not None:
+        np.random.seed(seed)
+
     dim = len(x0)
     mu = math.floor(population_size / 2)
 
@@ -79,7 +83,10 @@ def custom_cma_es(function, x0, sigma, population_size, max_iter=100):
 
 
 ## cma-es with extinction mechanism
-def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100):
+def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100, seed=None):
+    if seed is not None:
+            np.random.seed(seed)
+
     dim = len(x0)
     mu = math.floor(population_size / 2)
     weights = np.log(mu + 0.5) - np.log(np.arange(1, mu + 1))
