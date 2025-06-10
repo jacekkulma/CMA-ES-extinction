@@ -2,20 +2,42 @@ import numpy as np
 import math
 import cma
 
+def save_file_header(output_file):
+    with open(output_file, "w") as f:
+            f.write("iteration,best_fitness\n")
+
+def save_stats(output_file, iteration, best_fitness):
+    with open(output_file, "a") as f:
+                f.write(f"{iteration + 1},{best_fitness:.6f}\n")
+
+
 ## built-in cma-es
-def cma_es_cma(problem, x0, sigma, population_size, max_iter, seed=None):
+def cma_es_cma(problem, x0, sigma, population_size, max_iter, seed=None, output_file=None, iter_threshold=1):
     es = cma.CMAEvolutionStrategy(x0, sigma, {'popsize': population_size, 'maxiter': max_iter,
                                               'verb_log': 0, 'verb_disp': 0, 'seed': seed})
+    # file header
+    if output_file:
+        save_file_header(output_file)
+
+    iteration = 0
     while not es.stop():
         solutions = es.ask()
         fitnesses = [problem(x) for x in solutions]
         es.tell(solutions, fitnesses)
+
+        iteration += 1
+
+        # save to file
+        if output_file and (iteration + 1) % iter_threshold == 0:
+            best_fitness = min(fitnesses)
+            save_stats(output_file, iteration, best_fitness)
+
     result = es.result.xbest
     return result
 
 
 ## basic cma-es
-def custom_cma_es(function, x0, sigma, population_size, max_iter=100, seed=None):
+def custom_cma_es(function, x0, sigma, population_size, max_iter=100, seed=None, output_file=None, iter_threshold=1):
     if seed is not None:
         np.random.seed(seed)
 
@@ -41,6 +63,10 @@ def custom_cma_es(function, x0, sigma, population_size, max_iter=100, seed=None)
 
     eigeneval = 0
     xmean = np.array(x0)
+
+    # file header
+    if output_file:
+        save_file_header(output_file)
 
     for generation in range(max_iter):
         std_matrix = np.random.randn(population_size, dim)
@@ -79,11 +105,16 @@ def custom_cma_es(function, x0, sigma, population_size, max_iter=100, seed=None)
             D = np.sqrt(D)
             inv_sqrt_C = B @ np.diag(D**-1) @ B.T
 
+        # save to file
+        if output_file and (generation + 1) % iter_threshold == 0:
+            best_fitness = fitness[0]
+            save_stats(output_file, generation, best_fitness)
+
     return xmean
 
 
 ## cma-es with extinction mechanism
-def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100, seed=None):
+def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100, seed=None, output_file=None, iter_threshold=1):
     if seed is not None:
             np.random.seed(seed)
 
@@ -110,6 +141,10 @@ def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100, seed=N
     best_fitness = float('inf')
     no_improvement_count = 0
     extinction_threshold = 10  # generations without improvement
+
+    # file header
+    if output_file:
+        save_file_header(output_file)
 
     for generation in range(max_iter):
         arz = np.random.randn(population_size, dim)
@@ -173,6 +208,11 @@ def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100, seed=N
             D, B = np.linalg.eigh(C)
             D = np.sqrt(D)
             inv_sqrt_C = B @ np.diag(D ** -1) @ B.T
+
+        # save to file
+        if output_file and (generation + 1) % iter_threshold == 0:
+            best_fitness = fitness[0]
+            save_stats(output_file, generation, best_fitness)
 
     return xmean
 
