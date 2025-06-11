@@ -12,7 +12,7 @@ def save_stats(output_file, iteration, best_fitness):
 
 
 ## built-in cma-es
-def cma_es_cma(problem, x0, sigma, population_size, max_iter, seed=None, output_file=None, iter_threshold=1):
+def cma_es_cma(problem, x0, sigma, population_size, max_iter, seed=None, output_file=None, iter_threshold=1, **kwargs):
     es = cma.CMAEvolutionStrategy(x0, sigma, {'popsize': population_size, 'maxiter': max_iter,
                                               'verb_log': 0, 'verb_disp': 0, 'seed': seed})
     # file header
@@ -37,7 +37,7 @@ def cma_es_cma(problem, x0, sigma, population_size, max_iter, seed=None, output_
 
 
 ## basic cma-es
-def custom_cma_es(function, x0, sigma, population_size, max_iter=100, seed=None, output_file=None, iter_threshold=1):
+def custom_cma_es(function, x0, sigma, population_size, max_iter=100, seed=None, output_file=None, iter_threshold=1, **kwargs):
     if seed is not None:
         np.random.seed(seed)
 
@@ -114,7 +114,8 @@ def custom_cma_es(function, x0, sigma, population_size, max_iter=100, seed=None,
 
 
 ## cma-es with extinction mechanism
-def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100, seed=None, output_file=None, iter_threshold=1):
+def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100, seed=None, extinction_threshold=10,
+                      extinction_rate_worst=0.4, extinction_rate_best=0.1, output_file=None, iter_threshold=1, **kwargs):
     if seed is not None:
             np.random.seed(seed)
 
@@ -140,7 +141,6 @@ def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100, seed=N
     xmean = np.array(x0)
     best_fitness = float('inf')
     no_improvement_count = 0
-    extinction_threshold = 10  # generations without improvement
 
     # file header
     if output_file:
@@ -152,8 +152,6 @@ def custom_cma_es_ext(function, x0, sigma, population_size, max_iter=100, seed=N
 
         # --- Extinction strategy ---
         if no_improvement_count >= extinction_threshold:
-            extinction_rate_worst = 0.4
-            extinction_rate_best = 0.1
             num_extinct_worst = int(extinction_rate_worst * population_size)
             num_extinct_best = int(extinction_rate_best * population_size)
 
