@@ -12,6 +12,9 @@ dims = [5, 10, 20, 30, 50, 100]
 sigma = 0.3
 population_size = 20
 max_iter = 1000
+extinction_threshold = 10
+extinction_rate_worst = 0.4
+extinction_rate_best = 0.1
 
 test_functions = {
     "Sphere": sphere,
@@ -37,7 +40,9 @@ def main() -> None:
                     x0 = np.random.uniform(-5, 5, size=dim)
                     os.makedirs(os.path.join(dir, "iters"), exist_ok=True)
                     file_path = os.path.join(dir, "iters", f"{algorithm.__name__}_iters_seed_{seed}.txt")
-                    result = algorithm(func, x0, sigma, population_size, max_iter, seed, output_file=file_path, iter_threshold=100)
+                    result = algorithm(function=func, x0=x0, sigma=sigma, population_size=population_size, max_iter=max_iter,
+                                       seed=seed, output_file=file_path, iter_threshold=100, extinction_threshold=extinction_threshold,
+                                       extinction_rate_worst=extinction_rate_worst, extinction_rate_best=extinction_rate_best)
                     final_value = func(result)
                     
                     function_values.append(final_value)
