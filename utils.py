@@ -12,7 +12,7 @@ def save_stats(output_file, iteration, best_fitness):
 
 
 ## built-in cma-es
-def cma_es_cma(problem, x0, sigma, population_size, max_iter, seed=None, output_file=None, iter_threshold=1, **kwargs):
+def cma_es_cma(function, x0, sigma, population_size, max_iter, seed=None, output_file=None, iter_threshold=1, **kwargs):
     es = cma.CMAEvolutionStrategy(x0, sigma, {'popsize': population_size, 'maxiter': max_iter,
                                               'verb_log': 0, 'verb_disp': 0, 'seed': seed})
     # file header
@@ -22,7 +22,7 @@ def cma_es_cma(problem, x0, sigma, population_size, max_iter, seed=None, output_
     iteration = 0
     while not es.stop():
         solutions = es.ask()
-        fitnesses = [problem(x) for x in solutions]
+        fitnesses = [function(x) for x in solutions]
         es.tell(solutions, fitnesses)
 
         iteration += 1

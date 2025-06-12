@@ -9,12 +9,17 @@ output = "tests_results"
 
 ## parameters
 dims = [5, 10, 20, 30, 50, 100]
-sigma = 0.3
-population_size = 20
 max_iter = 1000
-extinction_threshold = 10
-extinction_rate_worst = 0.4
-extinction_rate_best = 0.1
+
+## from parameters_tuning_base and parameters_tuning_ext_params
+optimal_params = {
+    5:   {"sigma": 0.3, "population_size": 20, "ext_threshold": 10, "ext_rate_worst": 0.2, "ext_rate_best": 0.05},
+    10:  {"sigma": 0.3, "population_size": 20, "ext_threshold": 10, "ext_rate_worst": 0.4, "ext_rate_best": 0.2},
+    20:  {"sigma": 0.5, "population_size": 50, "ext_threshold": 10, "ext_rate_worst": 0.2, "ext_rate_best": 0.1},
+    30:  {"sigma": 0.5, "population_size": 50, "ext_threshold": 10, "ext_rate_worst": 0.4, "ext_rate_best": 0.2},
+    50:  {"sigma": 0.7, "population_size": 100, "ext_threshold": 10, "ext_rate_worst": 0.6, "ext_rate_best": 0.1},
+    100: {"sigma": 0.7, "population_size": 100, "ext_threshold": 10, "ext_rate_worst": 0.2, "ext_rate_best": 0.05}
+}
 
 test_functions = {
     "Sphere": sphere,
@@ -23,11 +28,17 @@ test_functions = {
     "Ackley": ackley
 }
 
+
 seeds = [42, 1234, 987654, 20240406, 777, 314159, 8675309, 99999, 1337, 55555]
 
 ## tests
 def main() -> None:
     for dim in dims:
+        sigma = optimal_params[dim]["sigma"]
+        population_size = optimal_params[dim]["population_size"]
+        ext_threshold = optimal_params[dim]["ext_threshold"]
+        ext_rate_worst = optimal_params[dim]["ext_rate_worst"]
+        ext_rate_best = optimal_params[dim]["ext_rate_best"]
         for name, func in test_functions.items():   
             # create output dir
             dir = os.path.join(output, f"dim_{dim}", f"{name}")
@@ -41,8 +52,8 @@ def main() -> None:
                     os.makedirs(os.path.join(dir, "iters"), exist_ok=True)
                     file_path = os.path.join(dir, "iters", f"{algorithm.__name__}_iters_seed_{seed}.txt")
                     result = algorithm(function=func, x0=x0, sigma=sigma, population_size=population_size, max_iter=max_iter,
-                                       seed=seed, output_file=file_path, iter_threshold=100, extinction_threshold=extinction_threshold,
-                                       extinction_rate_worst=extinction_rate_worst, extinction_rate_best=extinction_rate_best)
+                                       seed=seed, output_file=file_path, iter_threshold=100, extinction_threshold=ext_threshold,
+                                       extinction_rate_worst=ext_rate_worst, extinction_rate_best=ext_rate_best)
                     final_value = func(result)
                     
                     function_values.append(final_value)
