@@ -1,3 +1,6 @@
 /exdata
 /venv
 /__pycache__
+/tests_results
+/parameters_tuning
+/plots
