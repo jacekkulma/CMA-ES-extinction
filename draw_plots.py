@@ -1,5 +1,4 @@
 import numpy as np
-from utils import custom_cma_es, custom_cma_es_ext, sphere, rastrigin, rosenbrock, ackley, cma_es_cma
 import os
 from get_algorithms_results import algorithms, test_functions, dims, output
 import matplotlib.pyplot as plt
@@ -57,7 +56,7 @@ def draw_ecdf_lines_plots():
             plt.close()
             print(f"Plot saved: {plot_path}")
 
-def draw_iters_plots(iter_entires=10, iter_threshold=100):
+def draw_iters_plots(max_iters=800, iter_threshold=20):
     """
     Reads iteration logs for each algorithm, computes the average best fitness per iteration,
     and plots all algorithms on a single graph for comparison.
@@ -91,7 +90,8 @@ def draw_iters_plots(iter_entires=10, iter_threshold=100):
 
                     # Ensure at least 10 rows, fill missing with last available value
                     if data:
-                        while len(data) < iter_entires:
+                        iter_entries = max_iters / iter_threshold
+                        while len(data) < iter_entries:
                             data.append((data[-1][0] + iter_threshold, data[-1][1]))
                         all_data.append(data)
                     else:
