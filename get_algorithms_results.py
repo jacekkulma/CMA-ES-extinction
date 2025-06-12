@@ -9,7 +9,8 @@ output = "tests_results"
 
 ## parameters
 dims = [5, 10, 20, 30, 50, 100]
-max_iter = 1000
+max_iter = 800
+iter_threshold = 20
 
 ## from parameters_tuning_base and parameters_tuning_ext_params
 optimal_params = {
@@ -52,7 +53,7 @@ def main() -> None:
                     os.makedirs(os.path.join(dir, "iters"), exist_ok=True)
                     file_path = os.path.join(dir, "iters", f"{algorithm.__name__}_iters_seed_{seed}.txt")
                     result = algorithm(function=func, x0=x0, sigma=sigma, population_size=population_size, max_iter=max_iter,
-                                       seed=seed, output_file=file_path, iter_threshold=100, extinction_threshold=ext_threshold,
+                                       seed=seed, output_file=file_path, iter_threshold=iter_threshold, extinction_threshold=ext_threshold,
                                        extinction_rate_worst=ext_rate_worst, extinction_rate_best=ext_rate_best)
                     final_value = func(result)
                     
