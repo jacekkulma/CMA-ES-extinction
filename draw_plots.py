@@ -6,6 +6,8 @@ import glob
 
 plots_folder = "plots"
 
+markers = ["o", "s", "^"]
+
 def draw_ecdf_lines_plots():
     """
     Generates ECDF plots for different algorithms on each test function and dimension.
@@ -16,7 +18,8 @@ def draw_ecdf_lines_plots():
         for name, func in test_functions.items():
             plt.figure(figsize=(8, 6))
 
-            for algorithm in algorithms:
+            for i, algorithm in enumerate(algorithms):
+                marker = markers[i % len(markers)]  # Cycle through markers
                 file_path = os.path.join(output, f"dim_{dim}", f"{name}", f"{algorithm.__name__}_overview.txt")
 
                 if not os.path.exists(file_path):
@@ -41,7 +44,7 @@ def draw_ecdf_lines_plots():
                 ecdf_y = np.arange(1, len(sorted_values) + 1) / len(sorted_values)
 
                 # Plot ECDF curve for the algorithm
-                plt.step(sorted_values, ecdf_y, where="post", label=algorithm.__name__, linewidth=2)
+                plt.step(sorted_values, ecdf_y, where="post", label=algorithm.__name__, linewidth=2, marker=marker)
 
             # Set plot labels and title
             plt.xlabel("Objective Function Value")
@@ -68,7 +71,8 @@ def draw_iters_plots(max_iters=800, iter_threshold=20):
             dir_path = os.path.join(output, f"dim_{dim}", f"{name}", "iters")
             plt.figure(figsize=(8, 6))
 
-            for algorithm in algorithms:
+            for i, algorithm in enumerate(algorithms):
+                marker = markers[i % len(markers)]  # Cycle through markers
                 # Get all files that start with the algorithm's name
                 files = glob.glob(os.path.join(dir_path, f"{algorithm.__name__}_iters_seed_*.txt"))
 
@@ -108,13 +112,12 @@ def draw_iters_plots(max_iters=800, iter_threshold=20):
                 iter_nums = all_data[0, :, 0]  # Iteration numbers (assumed same for all runs)
 
                 # Plot average best fitness for this algorithm
-                plt.plot(iter_nums, avg_values, label=algorithm.__name__, linewidth=2)
-
+                plt.plot(iter_nums, avg_values, label=algorithm.__name__, linewidth=2, marker=marker)
             # Configure plot labels and title
             plt.xlabel("Iteration")
             plt.ylabel("Average Best Fitness")
             plt.title(f"Optimization Progress - {dim}D {name}")
-            plt.legend()
+            plt.legend(shadow=True)
             plt.grid()
 
             # Save plot
