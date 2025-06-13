@@ -1,6 +1,6 @@
-# 🧪 CMA-ES Benchmarking with COCO
+# 🧪 CMA-ES with extinction mechanism
 
-This project compares classic CMA-ES with CMS-ES with extinction mechanism algorithms on the BBOB test suite using the COCO benchmarking platform.
+This project compares classic CMA-ES with CMS-ES with extinction mechanism algorithms on 4 test functions: Sphere, Rosenbrock, Rastrigin and Ackley
 
 ---
 
