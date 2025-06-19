@@ -4,7 +4,6 @@ from get_algorithms_results import algorithms, test_functions, dims, output
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import glob
-from math import log10, floor, ceil
 
 plots_folder = "plots"
 
@@ -102,7 +101,7 @@ def draw_iters_plots(max_iters=800, iter_threshold=20):
                         iter_num, best_fitness = line.strip().split(",")
                         data.append((int(iter_num), float(best_fitness)))
 
-                    # Ensure at least 10 rows, fill missing with last available value
+                    # Ensure max_iters / iter_threshold rows, fill missing with last available value
                     if data:
                         iter_entries = max_iters / iter_threshold
                         while len(data) < iter_entries:
