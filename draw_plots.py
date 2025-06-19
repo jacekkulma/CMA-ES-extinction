@@ -2,11 +2,21 @@ import numpy as np
 import os
 from get_algorithms_results import algorithms, test_functions, dims, output
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import glob
+from math import log10, floor, ceil
 
 plots_folder = "plots"
 
 markers = ["o", "s", "^"]
+
+def concise_sci_notation(y, _):
+    if y == 0:
+        return "0"
+    exponent = int(np.floor(np.log10(abs(y))))
+    base = y / (10 ** exponent)
+    base_rounded = float(round(base, 1))
+    return f"{base_rounded}×10^{exponent}"
 
 def draw_ecdf_lines_plots():
     """
@@ -69,7 +79,7 @@ def draw_iters_plots(max_iters=800, iter_threshold=20):
     for dim in dims:
         for name, func in test_functions.items():
             dir_path = os.path.join(output, f"dim_{dim}", f"{name}", "iters")
-            plt.figure(figsize=(8, 6))
+            plt.figure(figsize=(9, 6))
 
             for i, algorithm in enumerate(algorithms):
                 marker = markers[i % len(markers)]  # Cycle through markers
@@ -113,7 +123,18 @@ def draw_iters_plots(max_iters=800, iter_threshold=20):
 
                 # Plot average best fitness for this algorithm
                 plt.plot(iter_nums, avg_values, label=algorithm.__name__, linewidth=2, marker=marker)
+
             # Configure plot labels and title
+            plt.yscale('symlog', linthresh=1e-2)
+
+            # Set Y range
+            ymin, ymax = plt.ylim()
+            tick_count = 6
+            ticks = np.geomspace(max(ymin, 1e-4), ymax, num=tick_count)
+
+            plt.gca().yaxis.set_major_locator(ticker.FixedLocator(ticks))
+            plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(concise_sci_notation))
+            
             plt.xlabel("Iteration")
             plt.ylabel("Average Best Fitness")
             plt.title(f"Optimization Progress - {dim}D {name}")
@@ -122,6 +143,7 @@ def draw_iters_plots(max_iters=800, iter_threshold=20):
 
             # Save plot
             plot_path = os.path.join(plots_folder, "iters", f"dim_{dim}_{name}.png")
+            plt.tight_layout()
             plt.savefig(plot_path)
             plt.close()
             print(f"Plot saved: {plot_path}")
